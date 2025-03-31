@@ -1,6 +1,6 @@
 const CACHE_NAME = "calcolo-interceptor-cache-v1";
 const urlsToCache = [
-  "./Configuratore-Zipwake.html",
+  "./index.html",
   "./manifest.json",
   "./favicon.ico",
   "./icon-192.png",
