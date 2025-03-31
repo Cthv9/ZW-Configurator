@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#007bff">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>Calcolo Zipwake | By FD</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: top;
+      min-height: 100vh;
+      position: relative;
+    }
+    .content {
+      margin-top: 50px;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 40px;
+      width: 100%;
+      max-width: 1400px;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+    .container h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .container label {
+      display: block;
+      margin-top: 15px;
+      color: #555;
+      font-weight: bold;
+    }
+    .container input, .container select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .container button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .container button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e9ecef;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+    }
+    .info-note {
+      font-size: 0.8em;
+      color: #888;
+      text-align: center;
+      margin-top: 5px;
+    }
+    .hidden {
+      display: none;
+    }
+    .section {
+      display: none;
+    }
+    .image-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .image-container img {
+      width: 350px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .footer-text {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      color: rgba(0, 0, 0, 0.5);
+      font-size: 14px;
+    }
+  </style>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="content">
+    <div class="image-container">
+      <img src="Immagine1.png" alt="S Series Table">
+      <img src="Immagine2.png" alt="E Series Table">
+    </div>
+    <div class="container" id="capture">
+      <h2>Calcolo Coefficiente Interceptor</h2>
+      <form id="calculationForm">
+        <label for="pairs">Quantità interceptor?</label>
+        <select id="pairs" name="pairs" onchange="updateSections()">
+          <option value="1">1 Coppia</option>
+          <option value="2">2 Coppie o singolo elemento</option>
+          <option value="3">3 Coppie o singolo elemento</option>
+        </select>
+        <div id="section1" class="section">
+          <h3>Coppia 1</h3>
+          <label for="model1">Modello Interceptor:</label>
+          <select id="model1" name="model1">
+            <optgroup label="Serie E">
+              <option value="0.4">IT400 (0,4m)</option>
+              <option value="0.6">IT600 (0,6m)</option>
+              <option value="0.8">IT800 (0,8m)</option>
+              <option value="1.0">IT1000 (1,0m)</option>
+              <option value="0.4">IT400 CHINE (0,4m)</option>
+              <option value="0.6">IT600 CHINE (0,6m)</option>
+              <option value="0.6">IT600 TUNNEL Rx (0,6m)</option>
+            </optgroup>
+            <optgroup label="Serie S">
+              <option value="0.3">IT300 (0,3m)</option>
+              <option value="0.45">IT450 (0,45m)</option>
+              <option value="0.6">IT600 (0,6m)</option>
+              <option value="0.75">IT750 (0,75m)</option>
+              <option value="0.3">IT300 CHINE (0,3m)</option>
+              <option value="0.45">IT450 CHINE (0,45m)</option>
+              <option value="0.3">IT300 INTERMEDIATE (0,3m)</option>
+              <option value="0.45">IT450 Vx (0,45m)</option>
+            </optgroup>
+          </select>
+          <label for="number1">Quantità:</label>
+          <input type="number" id="number1" name="number1" value="0">
+        </div>
+        <div id="section2" class="section">
+          <h3>Coppia 2 o singolo elemento</h3>
+          <label for="model2">Modello Interceptor:</label>
+          <select id="model2" name="model2">
+            <optgroup label="Serie E">
+              <option value="0.4">IT400 (0,4m)</option>
+              <option value="0.6">IT600 (0,6m)</option>
+              <option value="0.8">IT800 (0,8m)</option>
+              <option value="1.0">IT1000 (1,0m)</option>
+              <option value="0.4">IT400 CHINE (0,4m)</option>
+              <option value="0.6">IT600 CHINE (0,6m)</option>
+              <option value="0.6">IT600 TUNNEL Rx (0,6m)</option>
+            </optgroup>
+            <optgroup label="Serie S">
+              <option value="0.3">IT300 (0,3m)</option>
+              <option value="0.45">IT450 (0,45m)</option>
+              <option value="0.6">IT600 (0,6m)</option>
+              <option value="0.75">IT750 (0,75m)</option>
+              <option value="0.3">IT300 CHINE (0,3m)</option>
+              <option value="0.45">IT450 CHINE (0,45m)</option>
+              <option value="0.3">IT300 INTERMEDIATE (0,3m)</option>
+              <option value="0.45">IT450 Vx (0,45m)</option>
+            </optgroup>
+          </select>
+          <label for="number2">Quantità:</label>
+          <input type="number" id="number2" name="number2" value="0">
+        </div>
+        <div id="section3" class="section">
+          <h3>Coppia 3 o singolo elemento</h3>
+          <label for="model3">Modello Interceptor:</label>
+          <select id="model3" name="model3">
+            <optgroup label="Serie E">
+              <option value="0.4">IT400 (0,4m)</option>
+              <option value="0.6">IT600 (0,6m)</option>
+              <option value="0.8">IT800 (0,8m)</option>
+              <option value="1.0">IT1000 (1,0m)</option>
+              <option value="0.4">IT400 CHINE (0,4m)</option>
+              <option value="0.6">IT600 CHINE (0,6m)</option>
+              <option value="0.6">IT600 TUNNEL Rx (0,6m)</option>
+            </optgroup>
+            <optgroup label="Serie S">
+              <option value="0.3">IT300 (0,3m)</option>
+              <option value="0.45">IT450 (0,45m)</option>
+              <option value="0.6">IT600 (0,6m)</option>
+              <option value="0.75">IT750 (0,75m)</option>
+              <option value="0.3">IT300 CHINE (0,3m)</option>
+              <option value="0.45">IT450 CHINE (0,45m)</option>
+              <option value="0.3">IT300 INTERMEDIATE (0,3m)</option>
+              <option value="0.45">IT450 Vx (0,45m)</option>
+            </optgroup>
+          </select>
+          <label for="number3">Quantità:</label>
+          <input type="number" id="number3" name="number3" value="0">
+        </div>
+        <label for="length">Lunghezza dello scafo (m):</label>
+        <input type="number" id="length" name="length" required>
+        <label for="beam">Larghezza baglio massimo (m):</label>
+        <input type="number" id="beam" name="beam" required>
+        <button type="button" onclick="calculateCoefficient()">Calcola Coefficiente</button>
+      </form>
+      <div id="result" class="result"></div>
+      <div id="infoNote" class="info-note hidden">
+        Nota: Il calcolo della spinta è puramente indicativo e viene generato automaticamente, tenendo conto della densità dell'acqua marina, della superficie delle lame e della larghezza dello scafo.
+      </div>
+      <button id="saveButton" class="hidden" onclick="saveScreenshot()">Salva come Immagine</button>
+    </div>
+    <div class="image-container">
+      <img src="Immagine3.png" alt="Diagram Example">
+      <img src="Immagine4.png" alt="Z Calculation Example">
+    </div>
+  </div>
+  <div class="footer-text">
+    Made with ❤️ by FD
+  </div>
+  <script>
+    function updateSections() {
+      const pairs = document.getElementById('pairs').value;
+      const sections = [document.getElementById('section1'), document.getElementById('section2'), document.getElementById('section3')];
+      sections.forEach((section, index) => {
+        section.style.display = (index < pairs) ? 'block' : 'none';
+      });
+    }
+    function calculateCoefficient() {
+      const length = parseFloat(document.getElementById('length').value);
+      const beam = parseFloat(document.getElementById('beam').value);
+      const model1Length = parseFloat(document.getElementById('model1').value);
+      const number1 = parseFloat(document.getElementById('number1').value);
+      let totalSurfaceLength = model1Length * number1;
+      if (document.getElementById('section2').style.display === 'block') {
+        const model2Length = parseFloat(document.getElementById('model2').value);
+        const number2 = parseFloat(document.getElementById('number2').value);
+        totalSurfaceLength += model2Length * number2;
+      }
+      if (document.getElementById('section3').style.display === 'block') {
+        const model3Length = parseFloat(document.getElementById('model3').value);
+        const number3 = parseFloat(document.getElementById('number3').value);
+        totalSurfaceLength += model3Length * number3;
+      }
+      const zFactor = totalSurfaceLength / beam;
+      const rho = 1025;
+      const V = 10 * 0.514;
+      const g = 9.81;
+      const forceKg = ((totalSurfaceLength * totalSurfaceLength * rho * V * V) / beam) / g;
+      let rating, recommendation;
+      if (length <= 10) {
+        if (zFactor < 0.3) {
+          rating = "Minimo";
+          recommendation = "Considera di aggiungere più intercettori per migliorare l'efficienza.";
+        } else if (zFactor < 0.6) {
+          rating = "Buono";
+          recommendation = "La tua configurazione è buona, ma potresti migliorare l'efficienza con più intercettori.";
+        } else {
+          rating = "Eccellente";
+          recommendation = "La tua configurazione è ottimale.";
+        }
+      } else if (length <= 20) {
+        if (zFactor < 0.4) {
+          rating = "Minimo";
+          recommendation = "Considera di aggiungere più intercettori per migliorare l'efficienza.";
+        } else if (zFactor < 0.7) {
+          rating = "Buono";
+          recommendation = "La tua configurazione è buona, ma potresti migliorare l'efficienza con più intercettori.";
+        } else {
+          rating = "Eccellente";
+          recommendation = "La tua configurazione è ottimale.";
+        }
+      } else {
+        if (zFactor < 0.5) {
+          rating = "Minimo";
+          recommendation = "Considera di aggiungere più intercettori per migliorare l'efficienza.";
+        } else if (zFactor < 0.8) {
+          rating = "Buono";
+          recommendation = "La tua configurazione è buona, ma potresti migliorare l'efficienza con più intercettori.";
+        } else {
+          rating = "Eccellente";
+          recommendation = "La tua configurazione è ottimale.";
+        }
+      }
+      const resultText = `
+        Coefficiente Z: ${zFactor.toFixed(2)}<br>
+        Spinta a 10 nodi: ${forceKg.toFixed(0)} kg<br>
+        Valutazione: ${rating}<br>
+        Consiglio: ${recommendation}
+      `;
+      document.getElementById('result').innerHTML = resultText;
+      document.getElementById('saveButton').classList.remove('hidden');
+      document.getElementById('infoNote').classList.remove('hidden');
+    }
+    function saveScreenshot() {
+      html2canvas(document.querySelector("#capture")).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'calcolo_interceptor.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+    window.onload = function() {
+      updateSections();
+    };
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registrato con scope:', registration.scope);
+          })
+          .catch(error => {
+            console.log('ServiceWorker non registrato:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
