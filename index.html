@@ -110,10 +110,26 @@
       color: rgba(0, 0, 0, 0.5);
       font-size: 14px;
     }
+    /* Bottone di installazione */
+    #installButton {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+      z-index: 1000;
+    }
   </style>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
+  <!-- Bottone per l'installazione della PWA -->
+  <button id="installButton">Installa App</button>
   <div class="content">
     <div class="image-container">
       <img src="Immagine1.png" alt="S Series Table">
@@ -230,6 +246,23 @@
     Made with ❤️ by FD
   </div>
   <script>
+    let deferredPrompt;
+    // Gestione dell'evento beforeinstallprompt per mostrare il pulsante di installazione
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installButton').style.display = 'block';
+    });
+
+    // Azione sul pulsante di installazione
+    document.getElementById('installButton').addEventListener('click', async () => {
+      document.getElementById('installButton').style.display = 'none';
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+    });
+
     function updateSections() {
       const pairs = document.getElementById('pairs').value;
       const sections = [document.getElementById('section1'), document.getElementById('section2'), document.getElementById('section3')];
@@ -237,6 +270,7 @@
         section.style.display = (index < pairs) ? 'block' : 'none';
       });
     }
+
     function calculateCoefficient() {
       const length = parseFloat(document.getElementById('length').value);
       const beam = parseFloat(document.getElementById('beam').value);
@@ -303,6 +337,7 @@
       document.getElementById('saveButton').classList.remove('hidden');
       document.getElementById('infoNote').classList.remove('hidden');
     }
+
     function saveScreenshot() {
       html2canvas(document.querySelector("#capture")).then(canvas => {
         const link = document.createElement('a');
@@ -311,9 +346,11 @@
         link.click();
       });
     }
+
     window.onload = function() {
       updateSections();
     };
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
